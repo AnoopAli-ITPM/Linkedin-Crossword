@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>IT PM Crossword Challenge</title>
+<style>
+:root{
+  --playful-1:#FFB347; --playful-2:#6DD3CE; --playful-3:#9B72AA; --accent:#222;
+}
+body{font-family:Inter,Arial,Helvetica,sans-serif;background:linear-gradient(135deg,var(--playful-2) 0%, #fff 60%);margin:0;padding:24px;color:var(--accent);}
+.header{display:flex;align-items:center;gap:16px;}
+.logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--playful-3),var(--playful-1));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;}
+.container{max-width:1100px;margin-top:18px;background:rgba(255,255,255,0.95);padding:18px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.08);display:flex;gap:20px;flex-wrap:wrap;}
+.left{flex:0 0 640px;}
+.right{flex:1;min-width:260px;}
+.title{margin:0;font-size:20px;}
+.instructions{color:#444;margin-top:4px;font-size:14px;}
+.input{padding:8px 10px;border-radius:6px;border:1px solid #ddd;font-size:14px;width:100%;}
+.start-btn{background:var(--playful-3);color:white;padding:10px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:600;}
+.grid-wrap{background:#fff;border:4px solid #000;padding:10px;display:inline-block;border-radius:6px;}
+table.cross{border-collapse:collapse;}
+table.cross td{width:36px;height:36px;border:1px solid #000;position:relative;background:#fff;}
+table.cross td.block{background:#000;border:1px solid #000;}
+input.cell{width:100%;height:100%;border:0;text-align:center;font-weight:700;font-size:16px;caret-color:var(--playful-3);text-transform:uppercase;background:transparent;}
+.clue-number{position:absolute;top:1px;left:2px;font-size:10px;color:#000;}
+.hints{margin-top:6px;font-size:14px;}
+.hints ul{padding-left:18px;margin:6px 0 0 0;}
+.panel{background:linear-gradient(180deg,#fff,#f8f8ff);padding:12px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);}
+.score-num{font-size:34px;font-weight:800;color:var(--playful-3);}
+.timer{font-size:18px;font-weight:700;}
+.small{font-size:13px;color:#444;margin-top:6px;}
+.controls{display:flex;gap:8px;margin-top:10px;}
+.btn{padding:8px 10px;border-radius:6px;border:0;cursor:pointer;font-weight:600;}
+.quit-btn{background:#eee;}
+.comments{margin-top:12px;max-height:240px;overflow:auto;padding:8px;border-radius:6px;border:1px dashed #ddd;background:#fff;}
+.comment{padding:8px;border-bottom:1px solid #f1f1f1;font-size:14px;}
+.link-btn{background:var(--playful-2);color:#004; padding:8px 10px;border-radius:6px;border:0;cursor:pointer;font-weight:600;}
+.center{display:flex;align-items:center;gap:8px;}
+.footer-note{font-size:12px;color:#666;margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">PM</div>
+  <div>
+    <div style="font-weight:700;font-size:18px">IT Project Manager Crossword Challenge</div>
+    <div style="font-size:13px;color:#444">Play the challenge — enter your details to begin. Hosted for GitHub Pages.</div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="left">
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div>
+          <div class="title">Enter your details to start</div>
+          <div class="instructions">Name and designation are required. A 30-minute timer will start when you press Start.</div>
+        </div>
+        <div class="center">
+          <div class="timer" id="timerDisplay">30:00</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <input id="playerName" class="input" placeholder="Your name (required)" />
+        <input id="playerDesig" class="input" placeholder="Your designation (required)" />
+        <button id="startBtn" class="start-btn">Start Puzzle</button>
+      </div>
+
+      <div id="gameArea" style="margin-top:14px;display:none;">
+        <div style="display:flex;gap:18px;">
+          <div class="grid-wrap" id="gridWrap" aria-live="polite"></div>
+          <div style="min-width:240px;">
+            <div class="panel">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div><strong>Live Score</strong></div>
+                <div class="small">Correct letters</div>
+              </div>
+              <div style="margin-top:6px" class="score-num" id="liveScore">0</div>
+              <div class="small" id="wordProgress">Words found: 0 / 10</div>
+
+              <div class="hints" id="hintsBox">
+                <strong>Hints</strong>
+                <ul id="hintsList"></ul>
+              </div>
+
+              <div class="controls">
+                <button id="quitBtn" class="btn quit-btn">Quit & Submit</button>
+                <button id="showBtn" class="btn" style="background:#fff;border:1px solid #ccc;">Show Solutions</button>
+              </div>
+            </div>
+
+            <div class="panel" style="margin-top:12px;">
+              <strong>LinkedIn Post URL</strong>
+              <input id="lnkPostUrl" class="input" placeholder="Paste your LinkedIn post URL here (optional)" />
+              <div class="small">We cannot auto-comment — use the button below to open LinkedIn and paste the prepared comment.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">Tip: After finishing, click "Post Your Score to LinkedIn" to open a new window with prepared text. You must press Post yourself (LinkedIn requires manual posting).</div>
+  </div>
+
+  <div class="right">
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div><strong>Recent Submissions</strong></div>
+        <div style="font-size:12px;color:#666">Live leaderboard</div>
+      </div>
+      <div class="comments" id="commentsList">
+        <!-- comments go here -->
+      </div>
+      <div style="margin-top:8px;display:flex;gap:8px;">
+        <button id="postLinkedInBtn" class="link-btn">Post Your Score to LinkedIn</button>
+        <button id="copyBtn" class="btn" style="background:#fff;">Copy Comment</button>
+      </div>
+      <div class="small" style="margin-top:8px">When you click Post, the prepared comment is copied and a LinkedIn window will open. Paste it into the comment box and press Post.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Word list & hints */
+const WORDS = {
+  "AGILE":"An iterative approach to software delivery.",
+  "SCRUM":"A popular Agile framework used to manage complex projects.",
+  "SDLC":"A process defining stages from planning to deployment.",
+  "STAKEHOLDER":"A person with an interest or involvement in the project.",
+  "RISK":"An uncertain event that may impact project success.",
+  "BUDGET":"Financial allocation required for project delivery.",
+  "TIMELINE":"Schedule that defines project deadlines.",
+  "SCOPE":"Defines the boundaries and deliverables of a project.",
+  "RAID":"A log capturing risks, assumptions, issues, and dependencies.",
+  "JIRA":"A tool used for project and issue tracking."
+};
+const WORD_LIST = Object.keys(WORDS);
+const GRID_SIZE = 15;
+let placements = []; // {word,r,c,dr,dc}
+
+/* Simple placement algorithm */
+function placeWords(){
+  const grid = Array.from({length:GRID_SIZE}, ()=>Array(GRID_SIZE).fill(null));
+  placements = [];
+  const words = WORD_LIST.slice().sort((a,b)=>b.length-a.length);
+  const dirs = [[0,1],[1,0]];
+  for(let w of words){
+    let placed=false;
+    const cells=[];
+    for(let r=0;r<GRID_SIZE;r++) for(let c=0;c<GRID_SIZE;c++) for(let d=0;d<dirs.length;d++) cells.push([r,c,dirs[d][0],dirs[d][1]]);
+    shuffle(cells);
+    for(let [r,c,dr,dc] of cells){
+      if(canPlace(w,r,c,dr,dc,grid)){
+        for(let i=0;i<w.length;i++) grid[r+dr*i][c+dc*i]=w[i];
+        placements.push({word:w,r,c,dr,dc});
+        placed=true; break;
+      }
+    }
+    if(!placed){
+      return placeWords();
+    }
+  }
+  for(let r=0;r<GRID_SIZE;r++) for(let c=0;c<GRID_SIZE;c++) if(!grid[r][c]) grid[r][c]=randomLetter();
+  return grid;
+}
+
+function randomLetter(){ return String.fromCharCode(65+Math.floor(Math.random()*26)); }
+function canPlace(word,r,c,dr,dc,grid){
+  for(let i=0;i<word.length;i++){
+    let rr=r+dr*i, cc=c+dc*i;
+    if(rr<0||rr>=GRID_SIZE||cc<0||cc>=GRID_SIZE) return false;
+    if(grid[rr][cc] && grid[rr][cc]!==word[i]) return false;
+  }
+  let beforeR=r-dr, beforeC=c-dc, afterR=r+dr*word.length, afterC=c+dc*word.length;
+  if(beforeR>=0 && beforeR<GRID_SIZE && beforeC>=0 && beforeC<GRID_SIZE && grid[beforeR][beforeC]) return false;
+  if(afterR>=0 && afterR<GRID_SIZE && afterC>=0 && afterC<GRID_SIZE && grid[afterR][afterC]) return false;
+  return true;
+}
+
+function shuffle(array){ for(let i=array.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [array[i],array[j]]=[array[j],array[i]];} return array; }
+
+/* Build grid & UI */
+let gridSolutions = placeWords();
+function numberPlacements(){ let num=1; for(let p of placements) p._num = num++; }
+numberPlacements();
+
+function buildGrid(){
+  const wrap = document.getElementById('gridWrap');
+  const tbl = document.createElement('table'); tbl.className='cross';
+  for(let r=0;r<GRID_SIZE;r++){
+    const tr = document.createElement('tr');
+    for(let c=0;c<GRID_SIZE;c++){
+      const td = document.createElement('td');
+      let isPart=false, startNumber=null;
+      for(let p of placements){
+        for(let i=0;i<p.word.length;i++){
+          if(p.r+i*p.dr===r && p.c+i*p.dc===c){ isPart=true; if(i===0) startNumber = p._num; break; }
+        }
+      }
+      if(!isPart){ td.className='block'; tr.appendChild(td); continue; }
+      if(startNumber){ const numDiv = document.createElement('div'); numDiv.className='clue-number'; numDiv.textContent = startNumber; td.appendChild(numDiv); }
+      const inp = document.createElement('input'); inp.maxLength=1; inp.className='cell'; inp.dataset.solution = gridSolutions[r][c];
+      inp.addEventListener('input', onInputChange); inp.addEventListener('focus', ()=>inp.select());
+      td.appendChild(inp); tr.appendChild(td);
+    }
+    tbl.appendChild(tr);
+  }
+  wrap.innerHTML=''; wrap.appendChild(tbl);
+}
+buildGrid();
+function buildHints(){
+  const ul = document.getElementById('hintsList'); ul.innerHTML='';
+  const sorted = placements.slice().sort((a,b)=>a._num-b._num);
+  for(let p of sorted){ const li = document.createElement('li'); li.innerHTML = `<strong>${p._num} ${p.dr===0? 'Across':'Down'}</strong>: ${WORDS[p.word]}`; ul.appendChild(li); }
+}
+buildHints();
+
+/* Game logic */
+function onInputChange(e){
+  const inp = e.target; inp.value = inp.value.toUpperCase().replace(/[^A-Z]/g,'');
+  updateLiveScore(); checkCompletion();
+}
+function updateLiveScore(){
+  const inputs = document.querySelectorAll('input.cell'); let total=0, correct=0;
+  inputs.forEach(i=>{ if(i.value){ total++; if(i.value.toUpperCase()===i.dataset.solution.toUpperCase()) correct++; } });
+  document.getElementById('liveScore').textContent = correct;
+  let found=0;
+  for(let p of placements){
+    let ok=true;
+    for(let i=0;i<p.word.length;i++){
+      const cell = getCellAt(p.r + i*p.dr, p.c + i*p.dc);
+      if(!cell || cell.value.toUpperCase()!==p.word[i]){ ok=false; break; }
+    }
+    if(ok) found++;
+  }
+  document.getElementById('wordProgress').textContent = `Words found: ${found} / ${placements.length}`;
+}
+function getCellAt(r,c){
+  const tbl = document.querySelector('table.cross'); if(!tbl) return null; const row = tbl.rows[r]; if(!row) return null; const cell = row.cells[c]; if(!cell) return null; return cell.querySelector('input.cell');
+}
+function checkCompletion(){
+  let all=true;
+  for(let p of placements){
+    for(let i=0;i<p.word.length;i++){
+      const cell = getCellAt(p.r + i*p.dr, p.c + i*p.dc);
+      if(!cell || cell.value.toUpperCase()!==p.word[i]){ all=false; break; }
+    }
+    if(!all) break;
+  }
+  if(all && gameRunning){ finishGame(true); }
+}
+
+/* Timer */
+let timerInterval=null; let timeLeft = 30*60; let gameRunning=false; let startTime=null;
+function updateTimerDisplay(){ const mm = Math.floor(timeLeft/60).toString().padStart(2,'0'); const ss = (timeLeft%60).toString().padStart(2,'0'); document.getElementById('timerDisplay').textContent = `${mm}:${ss}`; }
+function startCountdown(){ updateTimerDisplay(); timerInterval = setInterval(()=>{ timeLeft--; updateTimerDisplay(); if(timeLeft<=0){ clearInterval(timerInterval); finishGame(false,true); } },1000); }
+
+/* Start handler */
+document.getElementById('startBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('playerName').value.trim(); const desig = document.getElementById('playerDesig').value.trim();
+  if(!name||!desig){ alert('Please enter both name and designation to start.'); return; }
+  // re-generate puzzle for fairness
+  gridSolutions = placeWords(); numberPlacements(); buildGrid(); buildHints(); updateLiveScore();
+  document.getElementById('gameArea').style.display='block'; document.getElementById('playerName').disabled=true; document.getElementById('playerDesig').disabled=true; document.getElementById('startBtn').disabled=true;
+  timeLeft = 30*60; startCountdown(); gameRunning=true; startTime = Date.now();
+});
+
+/* Quit & Show */
+document.getElementById('quitBtn').addEventListener('click', ()=>{ if(!gameRunning){ alert('Game not running.'); return; } if(confirm('Are you sure you want to quit? Your progress will be submitted.')) finishGame(false,false,true); });
+document.getElementById('showBtn').addEventListener('click', ()=>{ document.querySelectorAll('input.cell').forEach(i=> i.value = i.dataset.solution); updateLiveScore(); checkCompletion(); });
+
+/* Finish game */
+function finishGame(completed, timeout=false, manualQuit=false){
+  gameRunning=false; clearInterval(timerInterval);
+  const name = document.getElementById('playerName').value.trim(); const desig = document.getElementById('playerDesig').value.trim();
+  const timeTakenSec = Math.max(0, 30*60 - timeLeft); const mm = Math.floor(timeTakenSec/60), ss = timeTakenSec%60; const timeTakenStr = `${mm}m ${ss}s`;
+  const status = completed? 'Completed': (timeout? 'Time Up': 'Quit'); const score = document.getElementById('liveScore').textContent;
+  const record = {name, desig, time: timeTakenStr, status, score, timestamp: new Date().toISOString()};
+  saveSubmission(record); renderSubmissions(); setTimeout(()=>{ alert(`Puzzle ${status}.\nName: ${name}\nDesignation: ${desig}\nTime: ${timeTakenStr}\nWords/Score: ${score}`); },100);
+}
+
+/* Storage & submissions */
+function loadSubmissions(){ try{ const j=localStorage.getItem('pm_crossword_subs'); if(!j) return []; return JSON.parse(j);}catch(e){return [];} }
+function saveSubmission(rec){ const arr = loadSubmissions(); arr.unshift(rec); localStorage.setItem('pm_crossword_subs', JSON.stringify(arr.slice(0,100))); }
+function renderSubmissions(){ const list = document.getElementById('commentsList'); list.innerHTML=''; const subs = loadSubmissions(); if(subs.length===0){ list.innerHTML='<div style="padding:12px;color:#666">No submissions yet — be the first!</div>'; return; } for(let s of subs){ const d=document.createElement('div'); d.className='comment'; d.innerHTML = `<strong>${escapeHtml(s.name)}</strong> — ${escapeHtml(s.desig)}<br/><small>${s.time} • ${s.status} • Score: ${s.score}</small>`; list.appendChild(d); } }
+function escapeHtml(s){ return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+renderSubmissions(); updateLiveScore(); updateTimerDisplay();
+
+/* LinkedIn helpers */
+function prepareCommentText(rec){ return `I just ${rec.status==="Completed"?"completed":"played"} the IT Project Manager Crossword Challenge in ${rec.time} (Score: ${rec.score}). — ${rec.name}, ${rec.desig}`; }
+document.getElementById('postLinkedInBtn').addEventListener('click', ()=>{
+  const subs = loadSubmissions(); if(subs.length===0){ alert('No submission found to post. Complete or submit the puzzle first.'); return; } const rec=subs[0]; const comment = prepareCommentText(rec);
+  navigator.clipboard.writeText(comment).then(()=>{ const postUrl = document.getElementById('lnkPostUrl').value.trim(); if(postUrl){ window.open(postUrl,'_blank'); alert('Comment copied. Paste it into your LinkedIn post comment box and press Post.'); }else{ window.open('https://www.linkedin.com/feed/','_blank'); alert('Comment copied. Paste it into your LinkedIn post comment box and press Post.'); } }).catch(()=>{ alert('Unable to copy to clipboard. Here is your comment:\\n\\n'+comment); });
+});
+document.getElementById('copyBtn').addEventListener('click', ()=>{ const subs=loadSubmissions(); if(subs.length===0){ alert('No submission found.'); return;} const rec=subs[0]; const comment=prepareCommentText(rec); navigator.clipboard.writeText(comment).then(()=>alert('Comment copied to clipboard.')).catch(()=>alert('Copy failed. Here is the text:\\n\\n'+comment)); });
+
+</script>
+</body>
+</html>
