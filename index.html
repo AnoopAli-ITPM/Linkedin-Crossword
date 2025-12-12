@@ -255,13 +255,29 @@ renderSubmissions();
 
 /* LinkedIn post handling */
 const cleanLinkedIn = "https://www.linkedin.com/posts/anoopali-certified-itprojectmanager_pm-activity-7405268278832590848-igYx";
-document.getElementById('postLinkedIn').addEventListener('click', ()=>{
-  if(!window.finalComment){ alert('Complete or submit the puzzle first to prepare a comment.'); return; }
-  navigator.clipboard.writeText(window.finalComment).then(()=>{
-    const openUrl = (document.getElementById('postUrl').value.trim() || cleanLinkedIn);
-    window.open(openUrl,'_blank');
-    alert('Comment copied to clipboard. Paste it into your LinkedIn post comment box and press Post.');
-  }).catch(()=>{ alert('Unable to copy automatically. Comment:\n\n'+window.finalComment); });
+document.getElementById("postLinkedIn").addEventListener("click", ()=>{
+
+    if(!window.finalComment){
+        alert("Complete or submit the puzzle first to prepare a comment.");
+        return;
+    }
+
+    // Copy prepared comment
+    navigator.clipboard.writeText(window.finalComment)
+    .then(()=>{
+
+        // Your EXACT LinkedIn post URL (fully preserved)
+        const linkedinPostURL = 
+"https://www.linkedin.com/posts/anoopali-certified-itprojectmanager_pm-activity-7405268278832590848-igYx?utm_source=share&utm_medium=member_desktop&rcm=ACoAAAvUOIkB9LVWwJkCTj9YzqPi8XkMXJ3_YZw";
+
+        // Open your post directly
+        window.open(linkedinPostURL, "_blank");
+
+        alert("Comment copied! Paste it into your LinkedIn post and press POST.");
+    })
+    .catch(()=>{
+        alert("Copied failed — here is your comment:\n\n" + window.finalComment);
+    });
 });
 
 document.getElementById('copyComment').addEventListener('click', ()=>{
